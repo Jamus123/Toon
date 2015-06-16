@@ -45,9 +45,12 @@
             </div>
             <div id="pl_list">
             </div>
+            <div>
+            </div>
             <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
             <button class="btn btn-warning" id="get_playlists">Get playlists</button>
         </div>
+        <div><iframe src="https://embed.spotify.com/?uri=spotify:track:4th1RQAelzqgY7wL53UGQt" width="300" height="100" frameborder="0" allowtransparency="false"></iframe></div>
         <div id="googleMap" style="width:500px;height:380px;"></div>
     </div>
     <script id="user-profile-template" type="text/x-handlebars-template">
@@ -135,10 +138,10 @@
 
 
         Handlebars.registerHelper('each', function(context, options) {
-
+            //MODIFYING FOR TEST PRUPOSES
             var out = "<ul>";
-            for (var i = 0, l = context.length; i < l; i++) {
-              var item = options.fn(context[i])
+            for (var i = 0, l = context.length; i < 1; i++) {
+              var item = options.fn(context[0])
                 out = out + "<li>" + item + "</li>";
             }
             return out + "</ul>";

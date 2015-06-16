@@ -184,16 +184,19 @@ app.get('/get_playlists', function(req, res) {
         for (var index in body.items) {
 
             var item = body.items[index];
-
+            console.log(item);
             (function(_item) {
                 var playlistData = {
                     name: '',
                     tracks: []
                 };
+                var track_info = {
+                    name: '',
+                    uri: ''
+                };
                 playlistData.name = item.name;
                 if (_item && _item.href) {
                     authOptions['url'] = _item.href;
-                    console.log(_item.href);
                     request.get(authOptions, function(error, response, body) {
                         if (error) {
                             requestAmount--;
@@ -202,7 +205,10 @@ app.get('/get_playlists', function(req, res) {
                             var tracks = body['tracks']['items'];
 
                             for (var i = 0; i < tracks.length; i++) {
-                                playlistData['tracks'][i] = tracks[i]['track']['name']
+                                // console.log(tracks[i]['track']['uri']);
+                                track_info['name'] = tracks[i]['track']['name'];
+                                track_info['uri'] = tracks[i]['track']['uri'];
+                                playlistData['tracks'].push(track_info);
                             }
                             sendBackData.push(playlistData);
 
