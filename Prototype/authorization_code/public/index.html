@@ -17,19 +17,7 @@
         width: 500px;
     }
     </style>
-    <script src="http://maps.googleapis.com/maps/api/js"></script>
-    <script>
-    function initialize() {
-        var mapProp = {
-            center: new google.maps.LatLng(51.508742, -0.120850),
-            zoom: 5,
-            mayTypeId: google.maps.mayTypeId.ROADMAP
-        };
-        google.maps.Map(document.getElementById("googleMap"), mapProp);
 
-    }
-    google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
 </head>
 
 <body>
@@ -51,7 +39,7 @@
             <button class="btn btn-warning" id="get_playlists">Get playlists</button>
         </div>
         <div></div>
-        <div id="googleMap" style="width:500px;height:380px;"></div>
+        
     </div>
     <script id="user-profile-template" type="text/x-handlebars-template">
         <h1>Logged in as {{display_name}}</h1>
@@ -95,8 +83,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script>
+    
     //List Helper
-
 
     var user_id = String;
     var curr_token = String;
@@ -143,16 +131,20 @@
 
             for (var i = 0, l = context.length; i < l - 2; i++) {
                 var item = options.fn(context[i])
-                
-                for (var j = 0; j < context[i]['tracks'].length; j++) {
-                    var trackName = context[i]['tracks'][j]['name'];
-                    var trackUri = context[i]['tracks'][j]['uri'];
-                    var songBox = "<iframe src='https://embed.spotify.com/?uri=" + trackUri + "' width:'300' height='80' frameborder='0' allowtransparency='true'></iframe>"
-                    inner = inner + songBox;
-                }
+                var p_uri = context[i].p_uri;
+                console.log(p_uri);
+                var songBox = "<iframe src='https://embed.spotify.com/?uri=" + p_uri + "' width:'300' height='300' frameborder='0' allowtransparency='true'></iframe>"
+                    console.log("songBox",songBox);
+
+                // for (var j = 0; j < context[i]['tracks'].length; j++) {
+                //     var trackName = context[i]['tracks'][j]['name'];
+                //     var trackUri = context[i]['tracks'][j]['uri'];
+
+                //     inner = inner + songBox;
+                // }
                 inner = inner + "</ul>";
-                out = out + "<li>" + item + inner + "</li>";
-                
+                out = out + "<li>" + item + songBox + "</li>";
+
 
 
             }
@@ -225,7 +217,7 @@
                 var items = {
                     playlists: data
                 }
-                console.log(items);
+                console.log("these are my items", items);
                 plListPlaceholder.innerHTML = plListTemplate(items);
 
             })

@@ -184,17 +184,19 @@ app.get('/get_playlists', function(req, res) {
         for (var index in body.items) {
 
             var item = body.items[index];
-            console.log(item);
             (function(_item) {
                 var playlistData = {
                     name: '',
+                    p_uri: '',
                     tracks: []
                 };
 
                 playlistData.name = item.name;
+                playlistData.p_uri = item.uri;
                 if (_item && _item.href) {
                     authOptions['url'] = _item.href;
                     request.get(authOptions, function(error, response, body) {
+                        console.log(body);
                         if (error) {
                             requestAmount--;
                             defer.reject(error);
