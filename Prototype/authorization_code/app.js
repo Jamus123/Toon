@@ -190,10 +190,7 @@ app.get('/get_playlists', function(req, res) {
                     name: '',
                     tracks: []
                 };
-                var track_info = {
-                    name: '',
-                    uri: ''
-                };
+
                 playlistData.name = item.name;
                 if (_item && _item.href) {
                     authOptions['url'] = _item.href;
@@ -205,6 +202,10 @@ app.get('/get_playlists', function(req, res) {
                             var tracks = body['tracks']['items'];
 
                             for (var i = 0; i < tracks.length; i++) {
+                                var track_info = {
+                                    name: '',
+                                    uri: ''
+                                };
                                 // console.log(tracks[i]['track']['uri']);
                                 track_info['name'] = tracks[i]['track']['name'];
                                 track_info['uri'] = tracks[i]['track']['uri'];
@@ -233,8 +234,8 @@ app.get('/get_playlists', function(req, res) {
             console.log("we got it : ", data.length);
             res.send(data);
         }).catch(function(error) {
-          console.error("error with API");
-           res.send(error);
+            console.error("error with API");
+            res.send(error);
         });
 
     })

@@ -50,7 +50,7 @@
             <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
             <button class="btn btn-warning" id="get_playlists">Get playlists</button>
         </div>
-        <div><iframe src="https://embed.spotify.com/?uri=spotify:track:4th1RQAelzqgY7wL53UGQt" width="300" height="100" frameborder="0" allowtransparency="false"></iframe></div>
+        <div></div>
         <div id="googleMap" style="width:500px;height:380px;"></div>
     </div>
     <script id="user-profile-template" type="text/x-handlebars-template">
@@ -90,7 +90,6 @@
     </script>
     <!-- pl template -->
     <script id="pl_list_template" type="text/x-handlebars-template">
-    console.log(playlists);
         {{#each playlists}}{{name}}{{/each}}
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
@@ -140,9 +139,22 @@
         Handlebars.registerHelper('each', function(context, options) {
             //MODIFYING FOR TEST PRUPOSES
             var out = "<ul>";
-            for (var i = 0, l = context.length; i < 1; i++) {
-              var item = options.fn(context[0])
-                out = out + "<li>" + item + "</li>";
+            var inner = "<ul>"
+
+            for (var i = 0, l = context.length; i < l - 2; i++) {
+                var item = options.fn(context[i])
+                
+                for (var j = 0; j < context[i]['tracks'].length; j++) {
+                    var trackName = context[i]['tracks'][j]['name'];
+                    var trackUri = context[i]['tracks'][j]['uri'];
+                    var songBox = "<iframe src='https://embed.spotify.com/?uri=" + trackUri + "' width:'300' height='80' frameborder='0' allowtransparency='true'></iframe>"
+                    inner = inner + songBox;
+                }
+                inner = inner + "</ul>";
+                out = out + "<li>" + item + inner + "</li>";
+                
+
+
             }
             return out + "</ul>";
         });
@@ -213,8 +225,9 @@
                 var items = {
                     playlists: data
                 }
-                plListPlaceholder.innerHTML = plListTemplate(items);
                 console.log(items);
+                plListPlaceholder.innerHTML = plListTemplate(items);
+
             })
         })
 
