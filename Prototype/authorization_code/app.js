@@ -43,7 +43,7 @@ var app = express();
 
 app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
-
+ 
 
 
 
@@ -179,7 +179,7 @@ app.get('/get_playlists', function(req, res) {
         var sendBackData = [];
         // console.log(body);
         var defer = Q.defer();
-        var requestAmount = body.items.length;
+        // var requestAmount = body.items.length;
 
         for (var index in body.items) {
 
