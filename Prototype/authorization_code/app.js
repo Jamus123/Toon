@@ -39,13 +39,21 @@ var stateKey = 'spotify_auth_state';
 var app = express();
 
 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
+server.listen(1234);
+
+io.on('connection', function(socket) {
+    socket.emit('news', {hello: 'world'});
+    socket.on('my other event', function(data) {
+        console.log(data);
+    });
+});
 
 app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
  
-
-
 
 app.get('/login', function(req, res) {
 
@@ -63,8 +71,6 @@ app.get('/login', function(req, res) {
             state: state
         }));
 });
-
-
 
 
 app.get('/callback', function(req, res) {
@@ -133,8 +139,6 @@ app.get('/callback', function(req, res) {
 
 
 
-
-
 app.get('/refresh_token', function(req, res) {
 
     // requesting access token from refresh token
@@ -177,9 +181,8 @@ app.get('/get_playlists', function(req, res) {
     }
     request.get(authOptions, function(error, response, body) {
         var sendBackData = [];
-        // console.log(body);
         var defer = Q.defer();
-        // var requestAmount = body.items.length;
+        var requestAmount = body.items.length;
 
         for (var index in body.items) {
 
@@ -228,7 +231,7 @@ app.get('/get_playlists', function(req, res) {
 
 
             })(item)
-            // console.log("playlist names",playlistData);
+
 
         }
 
