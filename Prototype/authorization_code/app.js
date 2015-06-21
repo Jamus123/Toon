@@ -1,21 +1,14 @@
-/**
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
- *
- * For more information, read
- * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
- */
 
+//  module requires
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var Q = require('Q');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = 'csVOX219DIyJLq+H6UYhbZm8NIJW2igJEpiRqZnriPg8G3qAoQP8gbajbrX5/noB'; // Your client id
-var client_secret = 'xegMMw7sp9ADVj6Anx54Q5Th0XbaWhcOzA9w4YYqDpU8G3qAoQP8gbajbrX5/noB'; // Your client secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var client_id = '9b2a0f5b21e54841854ffda54e619b2c'; //client id
+var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800;' //client secret
+var redirect_uri = 'http://localhost:8888/callback'; //redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -37,8 +30,6 @@ var generateRandomString = function(length) {
 var stateKey = 'spotify_auth_state';
 
 var app = express();
-
-
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
@@ -51,6 +42,8 @@ io.on('connection', function(socket) {
     });
 });
 
+
+//
 app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
  
