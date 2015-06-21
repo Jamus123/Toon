@@ -3,9 +3,24 @@
 }
 
 body {
-	margin: 0;
+    margin: 0;
 }
+
 #map-canvas {
     width: 100%;
     height: 380px;
+}
+
+
+/*Index.html*/
+#login,
+#loggedin {
+    display: none;
+}
+
+.text-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 500px;
 }
