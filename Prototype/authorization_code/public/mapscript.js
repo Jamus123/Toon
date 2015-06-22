@@ -32,8 +32,9 @@
                  map: map,
                  icon: 'radio_tower.png'
              });
+             //Connect to web socket
              google.maps.event.addListener(marker1, 'click', function() {
-                 var socket = io.connect('localhost');
+                 var socket = io.connect('localhost:1234');
                  socket.on('news', function(data) {
                      console.log(data);
                      console.log("HELLO!")

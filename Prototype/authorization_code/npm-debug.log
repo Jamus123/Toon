@@ -1,0 +1,42 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'felixge/node-mysql' ]
+2 info using npm@2.7.4
+3 info using node@v0.12.2
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 warn package.json web-api-code-example@0.0.1 No repository field.
+6 warn package.json querystring@0.2.0 querystring is also the name of a node core module.
+7 silly cache add args [ 'felixge/node-mysql', null ]
+8 verbose cache add spec felixge/node-mysql
+9 silly cache add parsed spec { raw: 'felixge/node-mysql',
+9 silly cache add   scope: null,
+9 silly cache add   name: null,
+9 silly cache add   rawSpec: 'felixge/node-mysql',
+9 silly cache add   spec: 'git+ssh://git@github.com/felixge/node-mysql.git',
+9 silly cache add   type: 'hosted',
+9 silly cache add   hosted:
+9 silly cache add    { type: 'github',
+9 silly cache add      ssh: 'git@github.com:felixge/node-mysql.git',
+9 silly cache add      sshUrl: 'git+ssh://git@github.com/felixge/node-mysql.git',
+9 silly cache add      httpsUrl: 'https://github.com/felixge/node-mysql.git',
+9 silly cache add      directUrl: 'https://raw.githubusercontent.com/felixge/node-mysql/master/package.json' } }
+10 info maybeGithub Attempting felixge/node-mysql from git://github.com/felixge/node-mysql.git
+11 verbose addRemoteGit git-github-com-felixge-node-mysql-git-80878665 not in flight; caching
+12 verbose stack TypeError: Cannot read property 'trim' of undefined
+12 verbose stack     at C:\Program Files\nodejs\node_modules\npm\lib\cache\add-remote-git.js:98:31
+12 verbose stack     at C:\Program Files\nodejs\node_modules\npm\lib\utils\git.js:50:14
+12 verbose stack     at F (C:\Program Files\nodejs\node_modules\npm\node_modules\which\which.js:40:25)
+12 verbose stack     at E (C:\Program Files\nodejs\node_modules\npm\node_modules\which\which.js:43:29)
+12 verbose stack     at C:\Program Files\nodejs\node_modules\npm\node_modules\which\which.js:54:16
+12 verbose stack     at FSReqWrap.oncomplete (fs.js:95:15)
+13 verbose cwd C:\Users\jamey\Desktop\Final Project\c4_final_project\Prototype\authorization_code
+14 error Windows_NT 6.3.9600
+15 error argv "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "felixge/node-mysql"
+16 error node v0.12.2
+17 error npm  v2.7.4
+18 error Cannot read property 'trim' of undefined
+19 error If you need help, you may report this error at:
+19 error     <https://github.com/npm/npm/issues>
+20 verbose exit [ 1, true ]

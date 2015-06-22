@@ -5,9 +5,28 @@ var request = require('request'); // "Request" library
 var Q = require('Q');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+var mysql = require('mysql');
+var connection =  mysql.createConnection({
+    host: '127.0.0.1',
+    user: 'me',
+    password: '',
+    port: 3306,
+});
 
-var client_id = '9b2a0f5b21e54841854ffda54e619b2c'; //client id
-var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800;' //client secret
+connection.connect(function(err) {
+    if(err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+    }
+
+    console.log('connected as id ' + connection.threadId);
+});
+
+
+
+
+var client_id = 'x4RZjuBXn3RmAVJEO+MYaeOTFHtsJNXWlHOcu6mMFOMW0YBBhxRSYOtXV2vzqRHa'; //client id
+var client_secret = '4mrlKh9k3Ln0fEAvs4gDsrwFuK0rb66zYIrSku94IKoW0YBBhxRSYOtXV2vzqRHa'; //client secret
 var redirect_uri = 'http://localhost:8888/callback'; //redirect uri
 
 /**
@@ -43,7 +62,9 @@ io.on('connection', function(socket) {
 });
 
 
-//
+/*********************************************
+*
+**********************************************/
 app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
  
@@ -65,6 +86,11 @@ app.get('/login', function(req, res) {
         }));
 });
 
+
+
+/*********************************************
+*
+**********************************************/
 
 app.get('/callback', function(req, res) {
     console.log(req);
@@ -130,7 +156,9 @@ app.get('/callback', function(req, res) {
 });
 
 
-
+/*********************************************
+*
+**********************************************/
 
 app.get('/refresh_token', function(req, res) {
 
@@ -160,7 +188,9 @@ app.get('/refresh_token', function(req, res) {
 
 
 
-
+/*********************************************
+*
+**********************************************/
 app.get('/get_playlists', function(req, res) {
 
     var trak_url;
