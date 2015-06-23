@@ -13,14 +13,14 @@ var connection =  mysql.createConnection({
     port: 3306,
 });
 
-connection.connect(function(err) {
-    if(err) {
-        console.error('error connecting: ' + err.stack);
-        return;
-    }
+// connection.connect(function(err) {
+//     if(err) {
+//         console.error('error connecting: ' + err.stack);
+//         return;
+//     }
 
-    console.log('connected as id ' + connection.threadId);
-});
+//     console.log('connected as id ' + connection.threadId);
+// });
 
 
 
@@ -54,6 +54,10 @@ var io = require('socket.io')(server);
 
 server.listen(1234);
 
+
+/*********************************************
+*
+**********************************************/
 io.on('connection', function(socket) {
     socket.emit('news', {hello: 'world'});
     socket.on('my other event', function(data) {
@@ -69,6 +73,10 @@ app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
  
 
+
+/*********************************************
+*
+**********************************************/
 app.get('/login', function(req, res) {
 
     var state = generateRandomString(16);
@@ -222,13 +230,13 @@ app.get('/get_playlists', function(req, res) {
                 if (_item && _item.href) {
                     authOptions['url'] = _item.href;
                     request.get(authOptions, function(error, response, body) {
-                        console.log(body);
+                        // console.log(body);
                         if (error) {
                             requestAmount--;
                             defer.reject(error);
                         } else {
                             var tracks = body['tracks']['items'];
-
+                            console.log(tracks);
                             for (var i = 0; i < tracks.length; i++) {
                                 var track_info = {
                                     name: '',

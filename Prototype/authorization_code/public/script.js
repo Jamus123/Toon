@@ -43,7 +43,7 @@
             var out = "<ul>";
             var inner = "<ul>"
 
-            for (var i = 0, l = context.length; i < l - 2; i++) {
+            for (var i = 0, l = context.length; i < l-5; i++) {
                 var item = options.fn(context[i])
                 var p_uri = context[i].p_uri;
                 console.log(p_uri);

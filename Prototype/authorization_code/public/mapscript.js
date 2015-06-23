@@ -11,6 +11,10 @@
 
  var map;
 
+
+/*********************************************
+*
+**********************************************/
  function initialize() {
 
      var mapOptions = {
@@ -55,6 +59,10 @@
 
  }
 
+
+/*********************************************
+*
+**********************************************/
  function handleNoGeolocation(errorFlag) {
      if (errorFlag) {
          var content = 'Error: The Geolocation service failed.';
