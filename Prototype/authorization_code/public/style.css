@@ -13,10 +13,10 @@ body {
 
 
 /*Index.html*/
-#login,
+/*#login,
 #loggedin {
     display: none;
-}
+}*/
 
 .text-overflow {
     overflow: hidden;
