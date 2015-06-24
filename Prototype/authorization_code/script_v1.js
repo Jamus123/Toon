@@ -69,9 +69,6 @@
         });
 
 
-
-        console.log(curr_token);
-
         if (error) {
             alert('There was an error during the authentication');
         } else {
@@ -112,7 +109,6 @@
                 }).done(function(data) {
                     access_token = data.access_token;
 
-
                     oauthPlaceholder.innerHTML = oauthTemplate({
                         access_token: access_token,
                         refresh_token: refresh_token
@@ -137,7 +133,7 @@
                 console.log("these are my items", items);
                 plListPlaceholder.innerHTML = plListTemplate(items);
 
-            })
-        })
+            });
+        });
 
     })();

@@ -11,16 +11,17 @@ var connection =  mysql.createConnection({
     user: 'me',
     password: '',
     port: 3306,
+    database: 'fp_test'
 });
 
-// connection.connect(function(err) {
-//     if(err) {
-//         console.error('error connecting: ' + err.stack);
-//         return;
-//     }
+connection.connect(function(err) {
+    if(err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+    }
 
-//     console.log('connected as id ' + connection.threadId);
-// });
+    console.log('connected as id ' + connection.threadId);
+});
 
 
 
@@ -164,10 +165,11 @@ app.get('/callback', function(req, res) {
 });
 
 
+
+
 /*********************************************
 *
 **********************************************/
-
 app.get('/refresh_token', function(req, res) {
 
     // requesting access token from refresh token
@@ -194,6 +196,16 @@ app.get('/refresh_token', function(req, res) {
     });
 });
 
+
+app.get('/change_user', function(req, res) {
+    console.log("In the change user function");
+        connection.query('SELECT * FROM `users', function(error,results, fields) {
+                console.log("this is my error",error);
+                console.log("This is my results", results);
+                console.log("these are my fields", fields);
+        });
+
+});
 
 
 /*********************************************
