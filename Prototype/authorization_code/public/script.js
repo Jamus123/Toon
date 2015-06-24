@@ -48,10 +48,12 @@
        		$.ajax({
        			url:'/change_user',
        			success: function(response){
-       					
+       					$('#username').html(response[0]['username']);
        			}
        		})
        }
+
+       //User profile Initialization
        get_user();
 
        $('.popover-markup>.trigger').popover({

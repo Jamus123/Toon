@@ -146,6 +146,7 @@ app.get('/callback', function(req, res) {
                 // use the access token to access the Spotify Web API
                 request.get(options, function(error, response, body) {
                     console.log(body);
+                    connection.query('SELECT `spotify_id` FROM `users` ')
                 });
 
                 // we can also pass the token to the browser to make requests from there
@@ -163,7 +164,6 @@ app.get('/callback', function(req, res) {
         });
     }
 });
-
 
 
 
@@ -196,15 +196,16 @@ app.get('/refresh_token', function(req, res) {
     });
 });
 
-
+/**************************
+* Currently the users info from the database but later this 
+*  call will be user to change the user's information
+*******************/
 app.get('/change_user', function(req, res) {
     console.log("In the change user function");
-        connection.query('SELECT * FROM `users', function(error,results, fields) {
-                console.log("this is my error",error);
-                console.log("This is my results", results);
-                console.log("these are my fields", fields);
-        });
+        connection.query('SELECT * FROM `users`', function(error,results, fields) {
 
+                res.send(results);
+        });
 });
 
 
