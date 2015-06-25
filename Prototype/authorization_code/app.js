@@ -1,4 +1,3 @@
-
 //  module requires
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
@@ -6,7 +5,7 @@ var Q = require('Q');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var mysql = require('mysql');
-var connection =  mysql.createConnection({
+var connection = mysql.createConnection({
     host: '127.0.0.1',
     user: 'me',
     password: '',
@@ -15,7 +14,7 @@ var connection =  mysql.createConnection({
 });
 
 connection.connect(function(err) {
-    if(err) {
+    if (err) {
         console.error('error connecting: ' + err.stack);
         return;
     }
@@ -57,10 +56,12 @@ server.listen(1234);
 
 
 /*********************************************
-*
-**********************************************/
+ *
+ **********************************************/
 io.on('connection', function(socket) {
-    socket.emit('news', {hello: 'world'});
+    socket.emit('news', {
+        hello: 'world'
+    });
     socket.on('my other event', function(data) {
         console.log(data);
     });
@@ -68,16 +69,16 @@ io.on('connection', function(socket) {
 
 
 /*********************************************
-*
-**********************************************/
+ *
+ **********************************************/
 app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
- 
+
 
 
 /*********************************************
-*
-**********************************************/
+ *
+ **********************************************/
 app.get('/login', function(req, res) {
 
     var state = generateRandomString(16);
@@ -98,8 +99,8 @@ app.get('/login', function(req, res) {
 
 
 /*********************************************
-*
-**********************************************/
+ *
+ **********************************************/
 
 app.get('/callback', function(req, res) {
     console.log(req);
@@ -144,9 +145,19 @@ app.get('/callback', function(req, res) {
                 };
 
                 // use the access token to access the Spotify Web API
+                //Check if the spotifyId exists in my DB
                 request.get(options, function(error, response, body) {
                     console.log(body);
-                    connection.query('SELECT `spotify_id` FROM `users` ')
+                    connection.query('SELECT * FROM `users` WHERE `spotify_id` = ' + body.id + '', function(error, results, fields) {
+                        if (results[0]['spotify_id'] == body.id) {
+                            
+                        } else {
+                            // var query = 'INSERT INTO `users` (`spotify_id`) VALUES (' + body.id + ');';
+                            // conosle.log("this is my query", query);
+                            // connection.query(query);
+                        }
+                    });
+
                 });
 
                 // we can also pass the token to the browser to make requests from there
@@ -168,8 +179,8 @@ app.get('/callback', function(req, res) {
 
 
 /*********************************************
-*
-**********************************************/
+ *
+ **********************************************/
 app.get('/refresh_token', function(req, res) {
 
     // requesting access token from refresh token
@@ -197,21 +208,21 @@ app.get('/refresh_token', function(req, res) {
 });
 
 /**************************
-* Currently the users info from the database but later this 
-*  call will be user to change the user's information
-*******************/
+ * Currently the users info from the database but later this 
+ *  call will be user to change the user's information
+ *******************/
 app.get('/change_user', function(req, res) {
     console.log("In the change user function");
-        connection.query('SELECT * FROM `users`', function(error,results, fields) {
+    connection.query('SELECT * FROM `users`', function(error, results, fields) {
 
-                res.send(results);
-        });
+        res.send(results);
+    });
 });
 
 
 /*********************************************
-*
-**********************************************/
+ *
+ **********************************************/
 app.get('/get_playlists', function(req, res) {
 
     var trak_url;
