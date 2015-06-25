@@ -54,7 +54,6 @@
        }
 
        //User profile Initialization
-       get_user();
 
        $('.popover-markup>.trigger').popover({
            html: true,

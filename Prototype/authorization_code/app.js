@@ -5,6 +5,7 @@ var Q = require('Q');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var mysql = require('mysql');
+var bodyParser = require('body-parser');
 var connection = mysql.createConnection({
     host: '127.0.0.1',
     user: 'me',
@@ -148,13 +149,14 @@ app.get('/callback', function(req, res) {
                 //Check if the spotifyId exists in my DB
                 request.get(options, function(error, response, body) {
                     console.log(body);
-                    connection.query('SELECT * FROM `users` WHERE `spotify_id` = ' + body.id + '', function(error, results, fields) {
-                        if (results[0]['spotify_id'] == body.id) {
-                            
+                    connection.query('SELECT * FROM `users` WHERE `spotify_id` = ' + body.id, function(error, results, fields) {
+
+                        if (results.length != 0) {
+                            console.log("this user already exists");
                         } else {
-                            // var query = 'INSERT INTO `users` (`spotify_id`) VALUES (' + body.id + ');';
-                            // conosle.log("this is my query", query);
-                            // connection.query(query);
+                            var query = 'INSERT INTO `users` (`spotify_id`) VALUES (' + body.id + ');';
+                            console.log("this is my query", query);
+                            connection.query(query);
                         }
                     });
 
@@ -213,8 +215,7 @@ app.get('/refresh_token', function(req, res) {
  *******************/
 app.get('/change_user', function(req, res) {
     console.log("In the change user function");
-    connection.query('SELECT * FROM `users`', function(error, results, fields) {
-
+    connection.query('UPDATE * FROM `users`', function(error, results, fields) {
         res.send(results);
     });
 });
