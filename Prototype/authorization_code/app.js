@@ -1,11 +1,13 @@
 //  module requires
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
-var Q = require('Q');
+var Q = require('Q'); //promise library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var mysql = require('mysql');
+var morgan = require('morgan');
 var bodyParser = require('body-parser');
+var fs = require('fs');
 var connection = mysql.createConnection({
     host: '127.0.0.1',
     user: 'me',
@@ -74,6 +76,13 @@ io.on('connection', function(socket) {
  **********************************************/
 app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
+var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {
+    flags: 'a'
+});
+app.use(morgan('combined', {
+    stream: accessLogStream
+}));
+
 
 
 
@@ -104,7 +113,7 @@ app.get('/login', function(req, res) {
  **********************************************/
 
 app.get('/callback', function(req, res) {
-    console.log(req);
+    // console.log(req);
     // your application requests refresh and access tokens
     // after checking the state parameter
     var code = req.query.code || null;
@@ -146,9 +155,8 @@ app.get('/callback', function(req, res) {
                 };
 
                 // use the access token to access the Spotify Web API
-                //Check if the spotifyId exists in my DB
+                //Check if the spotifyId exists in my DB if not create row that uses their ID
                 request.get(options, function(error, response, body) {
-                    console.log(body);
                     connection.query('SELECT * FROM `users` WHERE `spotify_id` = ' + body.id, function(error, results, fields) {
 
                         if (results.length != 0) {
@@ -214,9 +222,9 @@ app.get('/refresh_token', function(req, res) {
  *  call will be user to change the user's information
  *******************/
 app.get('/change_user', function(req, res) {
-    console.log("In the change user function");
+    console.log('this is my req.query', req.query);
     connection.query('UPDATE * FROM `users`', function(error, results, fields) {
-        res.send(results);
+        res.send("hello");
     });
 });
 

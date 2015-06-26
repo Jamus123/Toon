@@ -1,6 +1,0 @@
-User info
-username:
-spotify_id:
-email:
-dob:
-fav_artist_uri:

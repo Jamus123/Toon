@@ -1,4 +1,7 @@
    (function() {
+   		user = {
+   			id: null
+   		};
 
        function getHashParams() {
            var hashParams = {};
@@ -30,7 +33,7 @@
                        'Authorization': 'Bearer ' + access_token
                    },
                    success: function(response) {
-
+                   		console.log(response);
                        user_id = response.id;
 
                        $('#login').hide();
@@ -53,8 +56,14 @@
        		})
        }
 
-       //User profile Initialization
+       $('#name_change_btn').click(function(){
+       		var nameChange = $('#nameChgInpt').val();
+       		$.ajax({
 
+       		})
+       });
+
+       //User profile Initialization
        $('.popover-markup>.trigger').popover({
            html: true,
            title: function() {
