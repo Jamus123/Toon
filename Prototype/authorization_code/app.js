@@ -28,8 +28,8 @@ connection.connect(function(err) {
 
 
 
-var client_id = 'x4RZjuBXn3RmAVJEO+MYaeOTFHtsJNXWlHOcu6mMFOMW0YBBhxRSYOtXV2vzqRHa'; //client id
-var client_secret = '4mrlKh9k3Ln0fEAvs4gDsrwFuK0rb66zYIrSku94IKoW0YBBhxRSYOtXV2vzqRHa'; //client secret
+var client_id = '9b2a0f5b21e54841854ffda54e619b2c'; //client id
+var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800'; //client secret
 var redirect_uri = 'http://localhost:8888/callback'; //redirect uri
 
 /**
@@ -84,8 +84,6 @@ app.use(morgan('combined', {
 }));
 
 
-
-
 /*********************************************
  *
  **********************************************/
@@ -111,7 +109,6 @@ app.get('/login', function(req, res) {
 /*********************************************
  *
  **********************************************/
-
 app.get('/callback', function(req, res) {
     // console.log(req);
     // your application requests refresh and access tokens
@@ -141,15 +138,24 @@ app.get('/callback', function(req, res) {
         };
 
         request.post(authOptions, function(error, response, body) {
+            var defer = Q.defer();
+
+            var tokenAndId = {
+                access_token : '',
+                refresh_token : '',
+                id: ''
+            }
+
             if (!error && response.statusCode === 200) {
 
-                var access_token = body.access_token,
-                    refresh_token = body.refresh_token;
+                    tokenAndId['access_token'] = body.access_token,
+                    tokenAndId['refresh_token'] = body.refresh_token;
+                    
 
                 var options = {
                     url: 'https://api.spotify.com/v1/me',
                     headers: {
-                        'Authorization': 'Bearer ' + access_token
+                        'Authorization': 'Bearer ' + tokenAndId['access_token']
                     },
                     json: true
                 };
@@ -158,24 +164,33 @@ app.get('/callback', function(req, res) {
                 //Check if the spotifyId exists in my DB if not create row that uses their ID
                 request.get(options, function(error, response, body) {
                     connection.query('SELECT * FROM `users` WHERE `spotify_id` = ' + body.id, function(error, results, fields) {
-
+                        var getIdQuery = 'SELECT `id` FROM `users` WHERE `spotify_id` = ' + body.id;
                         if (results.length != 0) {
                             console.log("this user already exists");
+                            connection.query(getIdQuery, function(error, results, fields) {
+                                tokenAndId['id'] = results[0]['id'];
+                                console.log("this is my send back data after DB query", tokenAndId)
+                                defer.resolve(tokenAndId);
+                            });
                         } else {
-                            var query = 'INSERT INTO `users` (`spotify_id`) VALUES (' + body.id + ');';
-                            console.log("this is my query", query);
-                            connection.query(query);
+                            var setUserQuery = 'INSERT INTO `users` (`spotify_id`) VALUES (' + body.id + ');';
+                            connection.query(setUserQuery);
+                            connection.query(getIdQuery, function(error, results, fields) {
+                                console.log("this is data after adding to DB", tokenAndId);
+                                defer.resolve(tokenAndId);
+                            });
+
                         }
                     });
 
                 });
 
                 // we can also pass the token to the browser to make requests from there
-                res.redirect('/#' +
-                    querystring.stringify({
-                        access_token: access_token,
-                        refresh_token: refresh_token
-                    }));
+                defer.promise.then(function(data) {
+                    res.redirect('/#' +
+                        querystring.stringify(data));
+                });
+
             } else {
                 res.redirect('/#' +
                     querystring.stringify({
@@ -224,7 +239,7 @@ app.get('/refresh_token', function(req, res) {
 app.get('/change_user', function(req, res) {
     console.log('this is my req.query', req.query);
     connection.query('UPDATE * FROM `users`', function(error, results, fields) {
-        res.send("hello");
+        res.send();
     });
 });
 
@@ -241,8 +256,8 @@ app.get('/get_playlists', function(req, res) {
             'Authorization': 'Bearer ' + req.query.access_token
         },
         json: true,
-
     }
+
     request.get(authOptions, function(error, response, body) {
         var sendBackData = [];
         var defer = Q.defer();
@@ -263,7 +278,6 @@ app.get('/get_playlists', function(req, res) {
                 if (_item && _item.href) {
                     authOptions['url'] = _item.href;
                     request.get(authOptions, function(error, response, body) {
-                        // console.log(body);
                         if (error) {
                             requestAmount--;
                             defer.reject(error);
@@ -275,7 +289,6 @@ app.get('/get_playlists', function(req, res) {
                                     name: '',
                                     uri: ''
                                 };
-                                // console.log(tracks[i]['track']['uri']);
                                 track_info['name'] = tracks[i]['track']['name'];
                                 track_info['uri'] = tracks[i]['track']['uri'];
                                 playlistData['tracks'].push(track_info);
