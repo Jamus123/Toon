@@ -28,8 +28,8 @@ connection.connect(function(err) {
 
 
 
-var client_id = '9b2a0f5b21e54841854ffda54e619b2c'; //client id
-var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800'; //client secret
+var client_id = 'x4RZjuBXn3RmAVJEO+MYaeOTFHtsJNXWlHOcu6mMFOMW0YBBhxRSYOtXV2vzqRHa'; //client id
+var client_secret = '4mrlKh9k3Ln0fEAvs4gDsrwFuK0rb66zYIrSku94IKoW0YBBhxRSYOtXV2vzqRHa'; //client secret
 var redirect_uri = 'http://localhost:8888/callback'; //redirect uri
 
 /**
