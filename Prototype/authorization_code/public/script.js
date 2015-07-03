@@ -55,35 +55,34 @@ $('.popover-markup>.trigger').popover({
     content: function() {
         return $(this).parent().find('.content').html();
     }
+}).parent().delegate('name_change_btn', function() {
+    console.log("in the name change click handler");
+    var nameChange = $('#nameChgInpt').val();
+    $.ajax({
+        data: {
+            id: id,
+            nameChange: nameChange
+        },
+        url: "/change_user",
+        success: function(response) {
+            $('#username').html(response[0]['username']);
+        }
+    })
 });
+
 
 
 $(document).ready(function() {
-
-
-    $('.nameChgPop').on('click', 'name_change_btn', function() {
-        console.log("in the name change click handler");
-        var nameChange = $('#nameChgInpt').val();
-        $.ajax({
-            data: {
-                id: id,
-                nameChange: nameChange
-            },
-            url: "/change_user",
-            success: function(response) {
-                $('#username').html(response[0]['username']);
-            }
-        })
-    });
+    
 });
 // $('#login_btn').click(function(){
-// 		$.ajax({
-// 			url:'/login',
-// 			crossDomain: true,
-// 			success: function(response){
-// 				console.log(response);
-// 			}
-// 		});
+//      $.ajax({
+//          url:'/login',
+//          crossDomain: true,
+//          success: function(response){
+//              console.log(response);
+//          }
+//      });
 // })
 
 

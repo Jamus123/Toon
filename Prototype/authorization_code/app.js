@@ -10,8 +10,8 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var connection = mysql.createConnection({
     host: '127.0.0.1',
-    user: 'me',
-    password: '',
+    user: 'admin',
+    password: 'Di$1smYp@$Sw0rD',
     port: 3306,
     database: 'fp_test'
 });
@@ -26,11 +26,9 @@ connection.connect(function(err) {
 });
 
 
-
-
-var client_id = 'x4RZjuBXn3RmAVJEO+MYaeOTFHtsJNXWlHOcu6mMFOMW0YBBhxRSYOtXV2vzqRHa'; //client id
-var client_secret = '4mrlKh9k3Ln0fEAvs4gDsrwFuK0rb66zYIrSku94IKoW0YBBhxRSYOtXV2vzqRHa'; //client secret
-var redirect_uri = 'http://localhost:8888/callback'; //redirect uri
+var client_id = '9b2a0f5b21e54841854ffda54e619b2c'; //client id
+var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800'; //client secret
+var redirect_uri = 'http://localhost:8888/callback'; //redirect urigit
 
 /**
  * Generates a random string containing numbers and letters
@@ -141,16 +139,16 @@ app.get('/callback', function(req, res) {
             var defer = Q.defer();
 
             var tokenAndId = {
-                access_token : '',
-                refresh_token : '',
+                access_token: '',
+                refresh_token: '',
                 id: ''
             }
 
             if (!error && response.statusCode === 200) {
 
-                    tokenAndId['access_token'] = body.access_token,
+                tokenAndId['access_token'] = body.access_token,
                     tokenAndId['refresh_token'] = body.refresh_token;
-                    
+
 
                 var options = {
                     url: 'https://api.spotify.com/v1/me',
@@ -174,10 +172,12 @@ app.get('/callback', function(req, res) {
                             });
                         } else {
                             var setUserQuery = 'INSERT INTO `users` (`spotify_id`) VALUES (' + body.id + ');';
-                            connection.query(setUserQuery);
-                            connection.query(getIdQuery, function(error, results, fields) {
-                                console.log("this is data after adding to DB", tokenAndId);
-                                defer.resolve(tokenAndId);
+                            connection.query(setUserQuery, function(){
+                                connection.query(getIdQuery, function(error, results, fields) {
+                                    tokenAndId['id'] = results[0]['id'];
+                                    console.log("this is data after adding to DB", tokenAndId);
+                                    defer.resolve(tokenAndId);
+                                });
                             });
 
                         }
