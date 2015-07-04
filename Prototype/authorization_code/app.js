@@ -10,8 +10,8 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var connection = mysql.createConnection({
     host: '127.0.0.1',
-    user: 'admin',
-    password: 'Di$1smYp@$Sw0rD',
+    user: 'me',
+    password: '',
     port: 3306,
     database: 'fp_test'
 });
@@ -26,8 +26,8 @@ connection.connect(function(err) {
 });
 
 
-var client_id = '9b2a0f5b21e54841854ffda54e619b2c'; //client id
-var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800'; //client secret
+var client_id = 'x4RZjuBXn3RmAVJEO+MYaeOTFHtsJNXWlHOcu6mMFOMW0YBBhxRSYOtXV2vzqRHa'; //client id
+var client_secret = '4mrlKh9k3Ln0fEAvs4gDsrwFuK0rb66zYIrSku94IKoW0YBBhxRSYOtXV2vzqRHa'; //client secret
 var redirect_uri = 'http://localhost:8888/callback'; //redirect urigit
 
 /**
@@ -141,7 +141,8 @@ app.get('/callback', function(req, res) {
             var tokenAndId = {
                 access_token: '',
                 refresh_token: '',
-                id: ''
+                id: '',
+                username: ''
             }
 
             if (!error && response.statusCode === 200) {
@@ -162,19 +163,21 @@ app.get('/callback', function(req, res) {
                 //Check if the spotifyId exists in my DB if not create row that uses their ID
                 request.get(options, function(error, response, body) {
                     connection.query('SELECT * FROM `users` WHERE `spotify_id` = ' + body.id, function(error, results, fields) {
-                        var getIdQuery = 'SELECT `id` FROM `users` WHERE `spotify_id` = ' + body.id;
+                        var getIdQuery = 'SELECT `id`,`username` FROM `users` WHERE `spotify_id` = ' + body.id;
                         if (results.length != 0) {
                             console.log("this user already exists");
                             connection.query(getIdQuery, function(error, results, fields) {
                                 tokenAndId['id'] = results[0]['id'];
+                                tokenAndId['username'] = results[0]['username'];
                                 console.log("this is my send back data after DB query", tokenAndId)
                                 defer.resolve(tokenAndId);
                             });
                         } else {
                             var setUserQuery = 'INSERT INTO `users` (`spotify_id`) VALUES (' + body.id + ');';
-                            connection.query(setUserQuery, function(){
+                            connection.query(setUserQuery, function() {
                                 connection.query(getIdQuery, function(error, results, fields) {
                                     tokenAndId['id'] = results[0]['id'];
+                                    tokenAndId['username'] = results[0]['username'];
                                     console.log("this is data after adding to DB", tokenAndId);
                                     defer.resolve(tokenAndId);
                                 });
@@ -237,9 +240,28 @@ app.get('/refresh_token', function(req, res) {
  *  call will be user to change the user's information
  *******************/
 app.get('/change_user', function(req, res) {
+    var errObj = {
+        error: null
+    }
     console.log('this is my req.query', req.query);
-    connection.query('UPDATE * FROM `users`', function(error, results, fields) {
-        res.send();
+    connection.query('SELECT `username` FROM `users`', function(error, results) {
+        console.log("these are the results from the select query", results);
+        for (var i = 0; i < results.length; i++) {
+            
+            if (results[i]['username'] == req.query['nameChange']) {
+                errObj['error'] = 'Username already taken';
+                res.send(errObj);
+            } else {
+                connection.query('UPDATE `users` SET username="' + req.query[
+                    'nameChange'] + '" WHERE id=' + req.query['id'] + ';', function(error, results, fields) {
+                    if (error) {
+                        res.send(error);
+                    } else {
+                        res.send(errObj);
+                    }
+                });
+            }
+        }
     });
 });
 
@@ -248,16 +270,15 @@ app.get('/change_user', function(req, res) {
  *
  **********************************************/
 app.get('/get_playlists', function(req, res) {
+    console.log("this is my request query", req.query);
 
-    var trak_url;
     var authOptions = {
-        url: 'https://api.spotify.com/v1/users/' + req.query.user_id + '/playlists',
+        url: 'https://api.spotify.com/v1/users/' + req.query.spotify_id + '/playlists',
         headers: {
             'Authorization': 'Bearer ' + req.query.access_token
         },
         json: true,
     }
-
     request.get(authOptions, function(error, response, body) {
         var sendBackData = [];
         var defer = Q.defer();
@@ -283,7 +304,7 @@ app.get('/get_playlists', function(req, res) {
                             defer.reject(error);
                         } else {
                             var tracks = body['tracks']['items'];
-                            console.log(tracks);
+                            // console.log(tracks);
                             for (var i = 0; i < tracks.length; i++) {
                                 var track_info = {
                                     name: '',

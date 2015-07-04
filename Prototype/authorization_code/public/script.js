@@ -1,6 +1,12 @@
-user = {
-    id: null
+var user = {
+    id: undefined,
+    username: undefined,
+    spotify_id: undefined,
+    playlists: []
 };
+
+
+
 
 function getHashParams() {
     var hashParams = {};
@@ -16,16 +22,18 @@ function getHashParams() {
 var params = getHashParams();
 curr_token = params.access_token;
 var access_token = curr_token,
-    refresh_token = params.refresh_token,
-    id = params.id,
-    error = params.error;
+    refresh_token = params.refresh_token;
+
+user.id = params.id;
+user.username = params.username;
+
+error = params.error;
 
 
 if (error) {
     alert('There was an error during the authentication');
 } else {
     if (access_token) {
-
 
         //load users data into the profile
         $.ajax({
@@ -34,19 +42,45 @@ if (error) {
                 'Authorization': 'Bearer ' + access_token
             },
             success: function(response) {
-                console.log(response);
-                user_id = response.id;
+                console.log("spot response", response.id);
+                user.spotify_id = response.id;
 
                 $('#login').hide();
                 $('#loggedin').show();
+                $('#username').html(user['username']);
+
+                {
+
+                    $.ajax({
+                        url: '/get_playlists',
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        data: {
+                            spotify_id: user.spotify_id,
+                            access_token: access_token
+                        },
+                        success: function(response) {
+                            user.playlists = response;
+                            console.log("this is the user playlist data",user.playlists);
+                        }
+
+                    });
+                }
             }
+
         });
+
+
     } else {
         // render initial screen
         $('#login').show();
         $('#loggedin').hide();
+
     }
 }
+
+//basic popover functionality
 $('.popover-markup>.trigger').popover({
     html: true,
     title: function() {
@@ -55,25 +89,35 @@ $('.popover-markup>.trigger').popover({
     content: function() {
         return $(this).parent().find('.content').html();
     }
-}).parent().delegate('name_change_btn', function() {
+})
+
+
+// jquery event to create popover and change the username
+//
+$('body').on('click', '#name_change_btn', function() {
     console.log("in the name change click handler");
     var nameChange = $('#nameChgInpt').val();
     $.ajax({
         data: {
-            id: id,
+            id: user.id,
             nameChange: nameChange
         },
         url: "/change_user",
         success: function(response) {
-            $('#username').html(response[0]['username']);
+            if (response.error) {
+                console.log(response.error);
+            } else {
+                $('#username').html(nameChange);
+                $('.nameChgPop>.trigger').popover('hide');
+            }
+
         }
     })
 });
 
 
-
 $(document).ready(function() {
-    
+
 });
 // $('#login_btn').click(function(){
 //      $.ajax({
