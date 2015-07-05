@@ -188,7 +188,7 @@ app.get('/callback', function(req, res) {
 
                 });
 
-                // we can also pass the token to the browser to make requests from there
+                //return data in promise
                 defer.promise.then(function(data) {
                     res.redirect('/#' +
                         querystring.stringify(data));

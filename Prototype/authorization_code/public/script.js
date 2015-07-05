@@ -62,7 +62,14 @@ if (error) {
                         },
                         success: function(response) {
                             user.playlists = response;
-                            console.log("this is the user playlist data",user.playlists);
+                            console.log("theis is my first playlist uri",user.playlists[0].p_uri);
+                            var playlistBox = $('<iframe>').attr({
+                            	src: 'https://embed.spotify.com/?uri=' + user.playlists[0].p_uri,
+                            	frameborder: 0,
+                            	width: '100%',
+                            	height: '100%'
+                            	                           });
+                            $('#playlist_box').append(playlistBox);
                         }
 
                     });
