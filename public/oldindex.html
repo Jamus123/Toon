@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400italic,700,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div id="login">
+            <div id="landingBG">
+                <div id='topBlok' class="empty_box"></div>
+                <div id='smlGryBox'>
+                    <a href="/login" class="btn loginBtn">Log in with Spotify</a>
+                </div>
+                <div id='botBlok' class="empty_box">
+                    <div>
+                        <a href="/about">About</a>
+                        <p>|</p>
+                        <a href="/legal">Legal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="loggedin">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8" style="height: 100px; border: 1px solid #fff">
+                        <div id="username"></div>
+                        <div class="popover-markup nameChgPop col-md-offset-11">
+                            <a href="/#" class="trigger btn btn-default"><i class="glyphicon glyphicon-wrench"></i></a>
+                            <div class="head hide">Edit Your Username</div>
+                            <div class="content hide">
+                                <div class="form-group">
+                                    <input type="text" id="nameChgInpt">
+                                </div>
+                                <button type="button" id="name_change_btn" class="btn btn-default">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="height: 100px; border: 1px solid #fff"></div>
+                </div>
+                <div class="row">
+                    <div id="favArtContainer" class="col-md-4" style="height: 300px; border: 1px solid #fff">
+                    <img src="https://i.scdn.co/image/82cbb8e169717fd127b7e626b1b7b0163a791df1">
+                    </div>
+                    <div class="col-md-4" style="height: 100px; border: 1px solid #fff"></div>
+                    <div id="playlist_box" class="col-md-4" style="height: 380px; border: 1px solid #fff">
+                    <div id="pl_tabs">
+                        <div class="hvr-sweep-to-top">1</div>
+                        <div class="hvr-sweep-to-top">2</div>
+                        <div class="hvr-sweep-to-top">3</div>
+                        <div class="hvr-sweep-to-top">4</div>
+                        <div class="hvr-sweep-to-top">5</div>
+                        <div class="hvr-sweep-to-top">7</div>
+                        <div class="hvr-sweep-to-top">8</div>
+                        <div class="hvr-sweep-to-top">9</div>
+                        <div class="hvr-sweep-to-top">10</div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src='script.js'></script>
+
+</html>

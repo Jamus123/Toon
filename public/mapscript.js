@@ -4,7 +4,7 @@
   *
   *****************************/
 
- // Note: This example requires that you consent to location sharing when
+ // Note: This requires that you consent to location sharing when
  // prompted by your browser. If you see a blank space instead of the map, this
  // is probably because you have denied permission for location sharing.
 
@@ -13,7 +13,7 @@
 
 
 /*********************************************
-*
+*Creation of google map and click handler for icons to connect to websocket
 **********************************************/
  function initialize() {
 
@@ -36,6 +36,8 @@
                  map: map,
                  icon: 'radio_tower.png'
              });
+
+
              //Connect to web socket
              google.maps.event.addListener(marker1, 'click', function() {
                  var socket = io.connect('localhost:1234');
@@ -47,6 +49,8 @@
                      });
                  });
              });
+
+
 
              map.setCenter(pos);
          }, function() {

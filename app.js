@@ -26,9 +26,9 @@ connection.connect(function(err) {
 });
 
 
-var client_id = 'x4RZjuBXn3RmAVJEO+MYaeOTFHtsJNXWlHOcu6mMFOMW0YBBhxRSYOtXV2vzqRHa'; //client id
-var client_secret = '4mrlKh9k3Ln0fEAvs4gDsrwFuK0rb66zYIrSku94IKoW0YBBhxRSYOtXV2vzqRHa'; //client secret
-var redirect_uri = 'http://localhost:8888/callback'; //redirect urigit
+var client_id = '9b2a0f5b21e54841854ffda54e619b2c'; //client id
+var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800'; //client secret
+var redirect_uri = 'http://localhost:8888/callback'; //redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -44,8 +44,6 @@ var generateRandomString = function(length) {
     }
     return text;
 };
-
-
 
 var stateKey = 'spotify_auth_state';
 
@@ -245,8 +243,7 @@ app.get('/change_user', function(req, res) {
     }
     console.log('this is my req.query', req.query);
     connection.query('SELECT `username` FROM `users`', function(error, results) {
-        console.log("these are the results from the select query", results);
-        for (var i = 0; i < results.length; i++) {
+        for (var i = 0, len = results.length; i < len; i++) {
             
             if (results[i]['username'] == req.query['nameChange']) {
                 errObj['error'] = 'Username already taken';
@@ -283,7 +280,6 @@ app.get('/get_playlists', function(req, res) {
         var sendBackData = [];
         var defer = Q.defer();
         var requestAmount = body.items.length;
-
         for (var index in body.items) {
 
             var item = body.items[index];
@@ -304,14 +300,19 @@ app.get('/get_playlists', function(req, res) {
                             defer.reject(error);
                         } else {
                             var tracks = body['tracks']['items'];
-                            // console.log(tracks);
+                            
                             for (var i = 0; i < tracks.length; i++) {
                                 var track_info = {
                                     name: '',
-                                    uri: ''
+                                    uri: '',
+                                    img: '',
+                                    artist: '',
+                                    
                                 };
                                 track_info['name'] = tracks[i]['track']['name'];
                                 track_info['uri'] = tracks[i]['track']['uri'];
+                                track_info['img'] = tracks[i]['track']['album']['images'][1]['url'];
+                                track_info['artist'] = tracks[i]['track']['artists'][0]['name'];
                                 playlistData['tracks'].push(track_info);
                             }
                             sendBackData.push(playlistData);
@@ -327,9 +328,7 @@ app.get('/get_playlists', function(req, res) {
                     defer.reject(error);
                 }
 
-
             })(item)
-
 
         }
 
@@ -337,7 +336,7 @@ app.get('/get_playlists', function(req, res) {
             console.log("we got it : ", data.length);
             res.send(data);
         }).catch(function(error) {
-            console.error("error with API");
+            console.error("error with API", error);
             res.send(error);
         });
 
