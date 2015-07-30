@@ -19,6 +19,8 @@
         return hashParams;
     }
 
+
+    //gets the auth hash from the url for use to make API calls
     var params = getHashParams();
     var curr_token = params.access_token;
     var access_token = curr_token,
@@ -30,6 +32,12 @@
     error = params.error;
 
 
+    /************************
+     *   Ajax request to retrieve users ID and then
+     *   to retrieve the users playlists and appends them to the DOM
+     *   with the Sptofy widget(iframe)
+     *
+     */
     if (error) {
         alert('There was an error during the authentication');
     } else {
@@ -47,7 +55,7 @@
 
                     $('#login').hide();
                     $('#loggedin').show();
-                    // $('#username').html(user['username']);
+                    $('#profileName').html(user['username']);
 
                     {
 
@@ -63,7 +71,7 @@
                             success: function(response) {
                                 user.playlists = response;
                                 console.log("this is my first playlist uri", user.playlists[0].p_uri);
-                                //Spotify widget needs heavy CSS refactoring :/
+
                                 var playlistBox = $('<iframe>').attr({
                                     src: 'https://embed.spotify.com/?uri=' + user.playlists[0].p_uri,
                                     frameborder: 0,
@@ -91,7 +99,11 @@
 
 
 
-    //basic popover functionality
+    /*Basic bootstrap popover functionality
+     *
+     */
+
+
     // $('.popover-markup>.trigger').popover({
     //     html: true,
     //     title: function() {
@@ -130,20 +142,32 @@
 
         //tabs reload the playlists uri into the iframe
         //only way around it
-        $('.plBtn').click(function(){
-            console.log(user.playlists[$(this).html() - 1])
+        $('.plBtn').click(function() {
             $('.spotWidget').attr("src", "https://embed.spotify.com/?uri=" + user.playlists[$(this).html() - 1].p_uri);
             currentPl = $(this).html() - 1;
 
         });
 
-        $('#favSong1').click(function(){
+        //function loads song related album cover images into the bootstrap modal
+        $('#favSong1').click(function() {
+
             var tracks = user.playlists[currentPl].tracks;
-            console.log(tracks);
-            for(var i = 0, len = tracks.length; i < len; i++)
-            {
-                var songBox = $('<img>').attr('src', tracks[i]['img']);
+            console.log(tracks)
+            $('.modal-body').empty();
+            for (var i = 0, len = tracks.length; i < len; i++) {
+                var songBox = $('<div>').attr('class','songBox');
+                var songImg = $('<img>').attr('src', tracks[i]['img']).css({
+                    'max-width': '50%',
+                    'max-height': '50%'
+                });
+                var songName = $('<p>').html('Track Name: ' + tracks[i]['name']).css('color',"#F9C530");
+                var artist = $('<p>').html('Artist: ' + tracks[i]['artist']).css('color',"white");
+
                 $('.modal-body').append(songBox);
+                $(songBox).append(songImg);
+                $(songBox).append(songName);
+                $(songBox).append(artist);
+
             }
         });
     });

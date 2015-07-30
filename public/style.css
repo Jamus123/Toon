@@ -20,6 +20,16 @@ body {
     width: 200px;
 }
 
+.intro{
+    left: 225px;
+    top: 250px;
+    font-family: 'Indie Flower', cursive;
+    display: flex;
+    flex-direction: column;
+    color:#F9C530;
+    position: absolute;
+}
+
 #landingBG {
     background-image: url('loginPic.jpeg');
 }
@@ -54,9 +64,10 @@ body {
     left: 70%;
     border-bottom: 1px solid #F9C530;
     font-family: 'Indie Flower', cursive;
-    font-size: 24px;
+    font-size: 40px;
     color: white;
     text-align: center;
+    padding-top: 50px;
 }
 
 #botBlok {
@@ -258,18 +269,24 @@ input:focus {
     border: 1px solid black;
     height: 100px;
     width: 200px;
+    color: #F9C530 ;
 }
 
 
 /* Broadcast and chat area */
 
 #bcContainer {
-    height: 800px;
+    height: 700px;
     width: 250px;
     background-color: #11100E;
     right: 75px;
     top: 50px;
     position: absolute;
+}
+
+#profileName{
+    color:white;
+    text-align: center;
 }
 
 

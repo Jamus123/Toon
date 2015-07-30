@@ -26,9 +26,9 @@ connection.connect(function(err) {
 });
 
 
-var client_id = '9b2a0f5b21e54841854ffda54e619b2c'; //client id
-var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800'; //client secret
-var redirect_uri = 'http://localhost:8888/callback'; //redirect uri
+var client_id = '9b2a0f5b21e54841854ffda54e619b2c';
+var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800';
+var redirect_uri = 'http://localhost:8888/callback';
 
 /**
  * Generates a random string containing numbers and letters
@@ -51,11 +51,15 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+
+//socket.io port
 server.listen(1234);
 
 
 /*********************************************
+ * Socket for connecting users to what is currently being broadcasted
  *
+ *  Will be moving this to its own module
  **********************************************/
 io.on('connection', function(socket) {
     socket.emit('news', {
@@ -68,7 +72,8 @@ io.on('connection', function(socket) {
 
 
 /*********************************************
- *
+ *  -Express function that defaults the users to the public directory
+ *  - Creates a file stream logger using morgan for logging requests
  **********************************************/
 app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
@@ -81,14 +86,19 @@ app.use(morgan('combined', {
 
 
 /*********************************************
- *
+ * Login route is called when the user clicks login from the landing page
+ * User is directed to login with Spotify. After login the user is routed to the /callback
+ * function with the redirect URI and there continues the login process.
+ * 
+ * @req - empty request body
+ * @res - holds querystring holding auth options and redirect uri
  **********************************************/
 app.get('/login', function(req, res) {
 
     var state = generateRandomString(16);
     res.cookie(stateKey, state);
 
-    // your application requests authorization
+    // application requests authorization
     var scope = 'user-read-private user-read-email playlist-read-collaborative playlist-read-private';
     res.redirect('https://accounts.spotify.com/authorize?' +
         querystring.stringify({
@@ -103,11 +113,13 @@ app.get('/login', function(req, res) {
 
 
 /*********************************************
- *
+ *  This route checks to make the user has an auth token
+ *   if they are logged in successfully they are checked in my DB if they exist.
+ *  if they do not their spotify ID is saved to the DB
  **********************************************/
 app.get('/callback', function(req, res) {
     // console.log(req);
-    // your application requests refresh and access tokens
+    // application requests refresh and access tokens
     // after checking the state parameter
     var code = req.query.code || null;
     var state = req.query.state || null;
@@ -205,7 +217,8 @@ app.get('/callback', function(req, res) {
 
 
 /*********************************************
- *
+ *  This is for users to request a new authorization token from spotify
+ * in order to access the API from the client side. Currently not shown on the DOM
  **********************************************/
 app.get('/refresh_token', function(req, res) {
 
@@ -234,7 +247,7 @@ app.get('/refresh_token', function(req, res) {
 });
 
 /**************************
- * Currently the users info from the database but later this 
+ * Currently changes the username from the database but later this 
  *  call will be user to change the user's information
  *******************/
 app.get('/change_user', function(req, res) {
@@ -264,7 +277,13 @@ app.get('/change_user', function(req, res) {
 
 
 /*********************************************
+ * This function gets all relevant information associated with the users
+ * playlists and dumps it on the client side. Promises are used to make sure
+ * that all calls to the Spotify API are complete before sending back information
  *
+ * @req Spotify ID and access token
+ * @res Playlist Data associated with user's account. This includes URI's, album and artist images urls,
+ * and names. All data is strings.
  **********************************************/
 app.get('/get_playlists', function(req, res) {
     console.log("this is my request query", req.query);
