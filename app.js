@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var connection = mysql.createConnection({
     host: '127.0.0.1',
-    user: 'me',
+    user: 'root',
     password: '',
     port: 3306,
     database: 'fp_test'
