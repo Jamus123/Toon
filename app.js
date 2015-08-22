@@ -47,9 +47,9 @@ var generateRandomString = function(length) {
 
 var stateKey = 'spotify_auth_state';
 
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var app = express(),
+    server = require('http').Server(app),
+    io = require('socket.io')(server);
 
 
 //socket.io port
@@ -62,9 +62,6 @@ server.listen(1234);
  *  Will be moving this to its own module
  **********************************************/
 io.on('connection', function(socket) {
-    socket.emit('news', {
-        hello: 'world'
-    });
     socket.on('my other event', function(data) {
         console.log(data);
     });
@@ -173,8 +170,9 @@ app.get('/callback', function(req, res) {
                 //Check if the spotifyId exists in my DB if not create row that uses their ID
                 request.get(options, function(error, response, body) {
                     connection.query('SELECT * FROM `users` WHERE `spotify_id` = ' + body.id, function(error, results, fields) {
-                        var getIdQuery = 'SELECT `id`,`username` FROM `users` WHERE `spotify_id` = ' + body.id;
-                        if (results.length != 0) {
+                        var getIdQuery = "SELECT `id`,`username` FROM `users` WHERE `spotify_id` = '" + body.id + "'";
+                        console.log("THESE ARE MY RESULTS", results);
+                        if (results != undefined && results != 0) {
                             console.log("this user already exists");
                             connection.query(getIdQuery, function(error, results, fields) {
                                 tokenAndId['id'] = results[0]['id'];
@@ -183,9 +181,11 @@ app.get('/callback', function(req, res) {
                                 defer.resolve(tokenAndId);
                             });
                         } else {
-                            var setUserQuery = 'INSERT INTO `users` (`spotify_id`) VALUES (' + body.id + ');';
-                            connection.query(setUserQuery, function() {
+                            post = {'spotify_id': '' + body.id};
+                            connection.query("INSERT INTO `users` SET ?",post, function(error) {
                                 connection.query(getIdQuery, function(error, results, fields) {
+                                    console.log("THIS IS MYSQL ERROR", error)
+                                    console.log("this is results from the new profile query", results);
                                     tokenAndId['id'] = results[0]['id'];
                                     tokenAndId['username'] = results[0]['username'];
                                     console.log("this is data after adding to DB", tokenAndId);

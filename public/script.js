@@ -70,8 +70,7 @@
                             },
                             success: function(response) {
                                 user.playlists = response;
-                                console.log("this is my first playlist uri", user.playlists[0].p_uri);
-
+                                console.log('playlist data', user.playlists);
                                 var playlistBox = $('<iframe>').attr({
                                     src: 'https://embed.spotify.com/?uri=' + user.playlists[0].p_uri,
                                     frameborder: 0,
@@ -79,6 +78,13 @@
                                     height: '100%',
                                     class: 'spotWidget'
                                 });
+
+                                for(var i = 0, len = user.playlists.length; i < len; i++)
+                                {
+                                    var plChoice = $('<li>').html(user.playlists[i].name);
+
+                                    $('#bcChoice').append(plChoice);
+                                }
 
                                 $('#pl_box').append(playlistBox);
 
@@ -90,53 +96,105 @@
             });
 
         } else {
-            // render initial screen
+            // render profile screen
             $('#login').show();
             $('#loggedin').hide();
 
         }
     }
 
+ /*******************************
+  * Map script
+  *
+  *****************************/
+
+ // Note: This requires that you consent to location sharing when
+ // prompted by your browser. If you see a blank space instead of the map, this
+ // is probably because you have denied permission for location sharing.
 
 
-    /*Basic bootstrap popover functionality
-     *
-     */
+ var map;
 
 
-    // $('.popover-markup>.trigger').popover({
-    //     html: true,
-    //     title: function() {
-    //         return $(this).parent().find('.head').html();
-    //     },
-    //     content: function() {
-    //         return $(this).parent().find('.content').html();
-    //     }
-    // })
+/*********************************************
+*Creation of google map and click handler for icons to connect to websocket
+**********************************************/
+ function initialize() {
+
+     var mapOptions = {
+         zoom: 6
+     };
+     map = new google.maps.Map(document.getElementById('map-canvas'),
+         mapOptions);
+
+     // Try HTML5 geolocation
+     if (navigator.geolocation) {
+         navigator.geolocation.getCurrentPosition(function(position) {
+             var pos = new google.maps.LatLng(position.coords.latitude,
+                 position.coords.longitude);
 
 
-    // jquery event to create popover and change the username
-    // $('body').on('click', '#name_change_btn', function() {
-    //     console.log("in the name change click handler");
-    //     var nameChange = $('#nameChgInpt').val();
-    //     $.ajax({
-    //         data: {
-    //             id: user.id,
-    //             nameChange: nameChange
-    //         },
-    //         url: "/change_user",
-    //         success: function(response) {
-    //             if (response.error) {
-    //                 console.log(response.error);
-    //             } else {
-    //                 $('#username').html(nameChange);
-    //                 $('.nameChgPop>.trigger').popover('hide');
-    //             }
+             var marker1Pos = new google.maps.LatLng(33.684818, -117.795199);
+             var marker1 = new google.maps.Marker({
+                 position: marker1Pos,
+                 map: map,
+                 icon: 'radio_tower.png'
+             });
 
-    //         }
-    //     })
-    // });
 
+             //Connect to web socket
+             google.maps.event.addListener(marker1, 'click', function() {
+                marker1.setIcon('radio_tower_selected.png');
+                 var socket = io.connect('localhost:1234');
+                 socket.on('news', function(data) {
+                     socket.emit('my other event', {
+                         my: 'data'
+                     });
+                 });
+                 socket.emit
+             });
+
+             map.setCenter(pos);
+         }, function() {
+             handleNoGeolocation(true);
+         });
+     } else {
+         // Browser doesn't support Geolocation
+         handleNoGeolocation(false);
+     }
+
+ }
+
+
+/*********************************************
+* Basic error functionality incase geolocations fails or is not supported
+**********************************************/
+ function handleNoGeolocation(errorFlag) {
+     if (errorFlag) {
+         var content = 'Error: The Geolocation service failed.';
+     } else {
+         var content = 'Error: Your browser doesn\'t support geolocation.';
+     }
+
+     var options = {
+         map: map,
+         position: new google.maps.LatLng(60, 105),
+         content: content
+     };
+
+
+     var infowindow = new google.maps.InfoWindow(options);
+     map.setCenter(options.position);
+ }
+
+
+ google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+ /***********************
+ * jQuery here
+ *************************/
 
     $(document).ready(function() {
 
@@ -148,6 +206,11 @@
 
         });
 
+        $('#bcChoice').on('click', 'li', function(){
+            var plToBroadcast = $('li').html();
+            console.log("this is the pltoBroadcast", plToBroadcast)
+        });
+
         //function loads song related album cover images into the bootstrap modal
         $('#favSong1').click(function() {
 
@@ -155,13 +218,13 @@
             console.log(tracks)
             $('.modal-body').empty();
             for (var i = 0, len = tracks.length; i < len; i++) {
-                var songBox = $('<div>').attr('class','songBox');
-                var songImg = $('<img>').attr('src', tracks[i]['img']).css({
+                var songBox = $('<div>').attr('class','songBox'),
+                    songImg = $('<img>').attr('src', tracks[i]['img']).css({
                     'max-width': '50%',
                     'max-height': '50%'
                 });
-                var songName = $('<p>').html('Track Name: ' + tracks[i]['name']).css('color',"#F9C530");
-                var artist = $('<p>').html('Artist: ' + tracks[i]['artist']).css('color',"white");
+                var songName = $('<p>').html(tracks[i]['name']).css('color',"#F9C530"),
+                    artist = $('<p>').html(tracks[i]['artist']).css('color',"white");
 
                 $('.modal-body').append(songBox);
                 $(songBox).append(songImg);
@@ -172,6 +235,5 @@
         });
     });
 
-}());
 
-//User profile Initialization
+ }());

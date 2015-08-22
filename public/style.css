@@ -282,10 +282,10 @@ input:focus {
     right: 75px;
     top: 50px;
     position: absolute;
+    color: #fff;
 }
 
 #profileName{
-    color:white;
     text-align: center;
 }
 
