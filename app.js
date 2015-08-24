@@ -66,19 +66,28 @@ var users = {};
 
 io.on('connection', function(socket) {
 
-    
+
     socket.on('bcInfo', function(data) {
         console.log("this is incoming data", data);
 
-        socket.userPL = data,
-        users[data] = data;
+        var hasPl = false;
 
-        if()
+        for (var pl in users) {
+            console.log(pl);
+            if (data == pl) {
+                hasPl = true;
+            }
+        }
+
+        if (!hasPl) {
+            socket.userPL = data;
+            users[data] = data;
+        }
 
         console.log("these are my global userPL's", users);
-        
+
         setTimeout(function() {
-            console.log("this is sendback data",data)
+            console.log("this is sendback data", data)
             socket.broadcast.emit('bcInfo', data);
         }, 3000);
     });

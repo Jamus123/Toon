@@ -110,6 +110,22 @@
     var map;
 
 
+
+    function smoothZoom(map, max, cnt) {
+        if (cnt >= max) {
+            return;
+        } else {
+            z = google.maps.event.addListener(map, 'zoom_changed', function(event) {
+                google.maps.event.removeListener(z);
+                smoothZoom(map, max, cnt + 1);
+            });
+            setTimeout(function() {
+                map.setZoom(cnt)
+            }, 80); // 80ms is what I found to work well on my system -- it might not work well on all systems
+        }
+    }
+
+
     /*********************************************
      *Creation of google map and click handler for icons to connect to websocket
      **********************************************/
@@ -138,10 +154,14 @@
 
                 //Connect to web socket
                 google.maps.event.addListener(marker1, 'click', function() {
+
+
+                    map.setCenter(marker1.getPosition());
+                    smoothZoom(map, 13, map.getZoom());
                     marker1.setIcon('radio_tower_selected.png');
                     var socket = io.connect('localhost:1234');
                     socket.on('bcInfo', function(data) {
-                        
+
                         console.log(data);
                     });
                     socket.emit('bcInfo', user.playlists[currentPl].p_uri);
