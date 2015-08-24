@@ -19,7 +19,6 @@
         return hashParams;
     }
 
-
     //gets the auth hash from the url for use to make API calls
     var params = getHashParams();
     var curr_token = params.access_token;
@@ -154,6 +153,18 @@
 
                 //Connect to web socket
                 google.maps.event.addListener(marker1, 'click', function() {
+
+                    var marker = new google.maps.Marker({
+                        position: map.getCenter(),
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 10
+                        },
+                        draggable: true,
+                        map: map
+                    });
+
+
 
 
                     map.setCenter(marker1.getPosition());
