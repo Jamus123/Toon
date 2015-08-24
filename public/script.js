@@ -79,18 +79,12 @@
                                     class: 'spotWidget'
                                 });
 
-                                for(var i = 0, len = user.playlists.length; i < len; i++)
-                                {
-                                    var plChoice = $('<li>').html(user.playlists[i].name);
-
-                                    $('#bcChoice').append(plChoice);
-                                }
-
                                 $('#pl_box').append(playlistBox);
 
                             }
 
                         });
+
                     }
                 }
             });
@@ -146,12 +140,12 @@
              google.maps.event.addListener(marker1, 'click', function() {
                 marker1.setIcon('radio_tower_selected.png');
                  var socket = io.connect('localhost:1234');
-                 socket.on('news', function(data) {
-                     socket.emit('my other event', {
-                         my: 'data'
-                     });
+                 socket.emit('bcInfo', {
+                    data : user.playlists[currentPl].p_uri
                  });
-                 socket.emit
+                 socket.on('bcInfo', function(data){
+                    console.log(data);
+                 })
              });
 
              map.setCenter(pos);
@@ -205,12 +199,6 @@
             currentPl = $(this).html() - 1;
 
         });
-
-        $('#bcChoice').on('click', 'li', function(){
-            var plToBroadcast = $('li').html();
-            console.log("this is the pltoBroadcast", plToBroadcast)
-        });
-
         //function loads song related album cover images into the bootstrap modal
         $('#favSong1').click(function() {
 

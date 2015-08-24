@@ -62,10 +62,15 @@ server.listen(1234);
  *  Will be moving this to its own module
  **********************************************/
 io.on('connection', function(socket) {
-    socket.on('my other event', function(data) {
-        console.log(data);
+
+    socket.on('bcInfo', function(data) {
+        socket.broadcast.emit('bcInfo', data);
     });
+
 });
+
+
+
 
 
 /*********************************************
@@ -181,8 +186,10 @@ app.get('/callback', function(req, res) {
                                 defer.resolve(tokenAndId);
                             });
                         } else {
-                            post = {'spotify_id': '' + body.id};
-                            connection.query("INSERT INTO `users` SET ?",post, function(error) {
+                            post = {
+                                'spotify_id': '' + body.id
+                            };
+                            connection.query("INSERT INTO `users` SET ?", post, function(error) {
                                 connection.query(getIdQuery, function(error, results, fields) {
                                     console.log("THIS IS MYSQL ERROR", error)
                                     console.log("this is results from the new profile query", results);
@@ -257,7 +264,7 @@ app.get('/change_user', function(req, res) {
     console.log('this is my req.query', req.query);
     connection.query('SELECT `username` FROM `users`', function(error, results) {
         for (var i = 0, len = results.length; i < len; i++) {
-            
+
             if (results[i]['username'] == req.query['nameChange']) {
                 errObj['error'] = 'Username already taken';
                 res.send(errObj);
@@ -319,14 +326,14 @@ app.get('/get_playlists', function(req, res) {
                             defer.reject(error);
                         } else {
                             var tracks = body['tracks']['items'];
-                            
+
                             for (var i = 0; i < tracks.length; i++) {
                                 var track_info = {
                                     name: '',
                                     uri: '',
                                     img: '',
                                     artist: '',
-                                    
+
                                 };
                                 track_info['name'] = tracks[i]['track']['name'];
                                 track_info['uri'] = tracks[i]['track']['uri'];
