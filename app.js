@@ -61,10 +61,21 @@ server.listen(1234);
  *
  *  Will be moving this to its own module
  **********************************************/
+
+users = {};
+
 io.on('connection', function(socket) {
 
+    
     socket.on('bcInfo', function(data) {
-        socket.broadcast.emit('bcInfo', data);
+        console.log("this is incoming data", data);
+        socket.userPL = data;
+        users[data] = data;
+        console.log("these are my global userPL's", users);
+        
+        setTimeout(function() {
+            socket.broadcast.emit('bcInfo', users);
+        }, 2000);
     });
 
 });

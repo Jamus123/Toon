@@ -97,98 +97,97 @@
         }
     }
 
- /*******************************
-  * Map script
-  *
-  *****************************/
+    /*******************************
+     * Map script
+     *
+     *****************************/
 
- // Note: This requires that you consent to location sharing when
- // prompted by your browser. If you see a blank space instead of the map, this
- // is probably because you have denied permission for location sharing.
-
-
- var map;
+    // Note: This requires that you consent to location sharing when
+    // prompted by your browser. If you see a blank space instead of the map, this
+    // is probably because you have denied permission for location sharing.
 
 
-/*********************************************
-*Creation of google map and click handler for icons to connect to websocket
-**********************************************/
- function initialize() {
-
-     var mapOptions = {
-         zoom: 6
-     };
-     map = new google.maps.Map(document.getElementById('map-canvas'),
-         mapOptions);
-
-     // Try HTML5 geolocation
-     if (navigator.geolocation) {
-         navigator.geolocation.getCurrentPosition(function(position) {
-             var pos = new google.maps.LatLng(position.coords.latitude,
-                 position.coords.longitude);
+    var map;
 
 
-             var marker1Pos = new google.maps.LatLng(33.684818, -117.795199);
-             var marker1 = new google.maps.Marker({
-                 position: marker1Pos,
-                 map: map,
-                 icon: 'radio_tower.png'
-             });
+    /*********************************************
+     *Creation of google map and click handler for icons to connect to websocket
+     **********************************************/
+    function initialize() {
+
+        var mapOptions = {
+            zoom: 6
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+
+        // Try HTML5 geolocation
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var pos = new google.maps.LatLng(position.coords.latitude,
+                    position.coords.longitude);
 
 
-             //Connect to web socket
-             google.maps.event.addListener(marker1, 'click', function() {
-                marker1.setIcon('radio_tower_selected.png');
-                 var socket = io.connect('localhost:1234');
-                 socket.emit('bcInfo', {
-                    data : user.playlists[currentPl].p_uri
-                 });
-                 socket.on('bcInfo', function(data){
-                    console.log(data);
-                 })
-             });
-
-             map.setCenter(pos);
-         }, function() {
-             handleNoGeolocation(true);
-         });
-     } else {
-         // Browser doesn't support Geolocation
-         handleNoGeolocation(false);
-     }
-
- }
+                var marker1Pos = new google.maps.LatLng(33.684818, -117.795199);
+                var marker1 = new google.maps.Marker({
+                    position: marker1Pos,
+                    map: map,
+                    icon: 'radio_tower.png'
+                });
 
 
-/*********************************************
-* Basic error functionality incase geolocations fails or is not supported
-**********************************************/
- function handleNoGeolocation(errorFlag) {
-     if (errorFlag) {
-         var content = 'Error: The Geolocation service failed.';
-     } else {
-         var content = 'Error: Your browser doesn\'t support geolocation.';
-     }
+                //Connect to web socket
+                google.maps.event.addListener(marker1, 'click', function() {
+                    marker1.setIcon('radio_tower_selected.png');
+                    var socket = io.connect('localhost:1234');
+                    socket.on('bcInfo', function(data) {
+                        console.log(data);
+                    });
+                    socket.emit('bcInfo', user.playlists[currentPl].p_uri);
 
-     var options = {
-         map: map,
-         position: new google.maps.LatLng(60, 105),
-         content: content
-     };
+                });
 
+                map.setCenter(pos);
+            }, function() {
+                handleNoGeolocation(true);
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleNoGeolocation(false);
+        }
 
-     var infowindow = new google.maps.InfoWindow(options);
-     map.setCenter(options.position);
- }
-
-
- google.maps.event.addDomListener(window, 'load', initialize);
+    }
 
 
+    /*********************************************
+     * Basic error functionality incase geolocations fails or is not supported
+     **********************************************/
+    function handleNoGeolocation(errorFlag) {
+        if (errorFlag) {
+            var content = 'Error: The Geolocation service failed.';
+        } else {
+            var content = 'Error: Your browser doesn\'t support geolocation.';
+        }
 
- /***********************
- * jQuery here
- *************************/
+        var options = {
+            map: map,
+            position: new google.maps.LatLng(60, 105),
+            content: content
+        };
+
+
+        var infowindow = new google.maps.InfoWindow(options);
+        map.setCenter(options.position);
+    }
+
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+    /***********************
+     * jQuery here
+     *************************/
 
     $(document).ready(function() {
 
@@ -206,13 +205,13 @@
             console.log(tracks)
             $('.modal-body').empty();
             for (var i = 0, len = tracks.length; i < len; i++) {
-                var songBox = $('<div>').attr('class','songBox'),
+                var songBox = $('<div>').attr('class', 'songBox'),
                     songImg = $('<img>').attr('src', tracks[i]['img']).css({
-                    'max-width': '50%',
-                    'max-height': '50%'
-                });
-                var songName = $('<p>').html(tracks[i]['name']).css('color',"#F9C530"),
-                    artist = $('<p>').html(tracks[i]['artist']).css('color',"white");
+                        'max-width': '50%',
+                        'max-height': '50%'
+                    });
+                var songName = $('<p>').html(tracks[i]['name']).css('color', "#F9C530"),
+                    artist = $('<p>').html(tracks[i]['artist']).css('color', "white");
 
                 $('.modal-body').append(songBox);
                 $(songBox).append(songImg);
@@ -224,4 +223,4 @@
     });
 
 
- }());
+}());
