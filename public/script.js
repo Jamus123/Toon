@@ -141,6 +141,7 @@
                     marker1.setIcon('radio_tower_selected.png');
                     var socket = io.connect('localhost:1234');
                     socket.on('bcInfo', function(data) {
+                        
                         console.log(data);
                     });
                     socket.emit('bcInfo', user.playlists[currentPl].p_uri);
