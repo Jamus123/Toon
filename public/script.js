@@ -164,12 +164,27 @@
 
                     //get the four corners of the circle in LatLng
                     var bounds = circle.getBounds(),
-                    ne = bounds.getNorthEast(),
-                    sw = bounds.getSouthWest(),
-                    nw = new google.maps.LatLng(ne.lat(), sw.lng()),
-                    se = new google.maps.LatLng(sw.lat(), ne.lng());
+                        ne = bounds.getNorthEast(),
+                        sw = bounds.getSouthWest(),
+                        lngSpan = ne.lng() - sw.lng(),
+                        latSpan = ne.lat() - sw.lat();
 
                     console.log("These are the bounds of my circle", bounds.getNorthEast());
+
+
+                    var markerArray = [];
+
+                    // for (var i, int = 0; i < 10; i++) {
+                        var newLat = sw.lat() + (latSpan * Math.random()),
+                        newLng = sw.lng() + (lngSpan * Math.random()),
+                        latlng = new google.maps.LatLng(newLat, newLng),
+                        marker = new google.maps.Marker(latlng);
+                        markerArray.push(marker);
+                        map.addOverlay(markerArray[0]);
+                        //map.removeOverlay(marker);
+                        //trace(markerArray.length);
+                    // }
+
 
 
                     map.setCenter(marker1.getPosition());
