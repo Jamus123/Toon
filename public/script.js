@@ -158,8 +158,9 @@
                         center: marker1Pos,
                         radius: 4000,
                         map: map,
-                        fillOpacity: .1
+                        fillOpacity: 0
                     });
+
 
 
                     //get the four corners of the circle in LatLng
@@ -174,18 +175,18 @@
 
                     var markerArray = [];
 
+                    //implement loop once multiple accounts are being connected
                     // for (var i, int = 0; i < 10; i++) {
-                        var newLat = sw.lat() + (latSpan * Math.random()),
-                        newLng = sw.lng() + (lngSpan * Math.random()),
+                        var newLat = sw.lat() + (latSpan * Math.random() - .001),
+                        newLng = sw.lng() + (lngSpan * Math.random() - .001),
                         latlng = new google.maps.LatLng(newLat, newLng),
-                        marker = new google.maps.Marker(latlng);
-                        markerArray.push(marker);
-                        map.addOverlay(markerArray[0]);
-                        //map.removeOverlay(marker);
-                        //trace(markerArray.length);
+                        bcer = new google.maps.Marker({
+                            position: latlng,
+                            icon : 'radio_tower_selected.png',
+                            map: map
+                        });
+                        markerArray.push(bcer);
                     // }
-
-
 
                     map.setCenter(marker1.getPosition());
                     smoothZoom(map, 13, map.getZoom());
@@ -194,6 +195,10 @@
                     socket.on('bcInfo', function(data) {
 
                         console.log(data);
+
+                        //will change this later to chosen username for now it spotify username
+                        var username = data.split(':')[2];
+                        console.log("this is my split up URI", splitUri);
                     });
                     socket.emit('bcInfo', user.playlists[currentPl].p_uri);
 
