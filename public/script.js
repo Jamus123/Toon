@@ -154,17 +154,22 @@
                 //Connect to web socket
                 google.maps.event.addListener(marker1, 'click', function() {
 
-                    var marker = new google.maps.Marker({
-                        position: map.getCenter(),
-                        icon: {
-                            path: google.maps.SymbolPath.CIRCLE,
-                            scale: 10
-                        },
-                        draggable: true,
-                        map: map
+                    var circle = new google.maps.Circle({
+                        center: marker1Pos,
+                        radius: 4000,
+                        map: map,
+                        fillOpacity: .1
                     });
 
 
+                    //get the four corners of the circle in LatLng
+                    var bounds = circle.getBounds(),
+                    ne = bounds.getNorthEast(),
+                    sw = bounds.getSouthWest(),
+                    nw = new google.maps.LatLng(ne.lat(), sw.lng()),
+                    se = new google.maps.LatLng(sw.lat(), ne.lng());
+
+                    console.log("These are the bounds of my circle", bounds.getNorthEast());
 
 
                     map.setCenter(marker1.getPosition());
