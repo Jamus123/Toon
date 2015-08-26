@@ -162,7 +162,6 @@
                     });
 
 
-
                     //get the four corners of the circle in LatLng
                     var bounds = circle.getBounds(),
                         ne = bounds.getNorthEast(),
@@ -177,28 +176,50 @@
 
                     //implement loop once multiple accounts are being connected
                     // for (var i, int = 0; i < 10; i++) {
-                        var newLat = sw.lat() + (latSpan * Math.random() - .001),
+                    var newLat = sw.lat() + (latSpan * Math.random() - .001),
                         newLng = sw.lng() + (lngSpan * Math.random() - .001),
-                        latlng = new google.maps.LatLng(newLat, newLng),
-                        bcer = new google.maps.Marker({
-                            position: latlng,
-                            icon : 'radio_tower_selected.png',
-                            map: map
-                        });
-                        markerArray.push(bcer);
+                        latlng = new google.maps.LatLng(newLat, newLng);
+
+                    var broadcaster = new google.maps.Marker({
+                        position: latlng,
+                        icon: 'radio_tower_selected.png',
+                        map: map
+                    });
+
+                    markerArray.push(broadcaster);
                     // }
 
                     map.setCenter(marker1.getPosition());
+                    //zoom animation
                     smoothZoom(map, 13, map.getZoom());
+
                     marker1.setIcon('radio_tower_selected.png');
                     var socket = io.connect('localhost:1234');
                     socket.on('bcInfo', function(data) {
 
-                        console.log(data);
-
                         //will change this later to chosen username for now it spotify username
                         var username = data.split(':')[2];
-                        console.log("this is my split up URI", splitUri);
+
+                        google.maps.event.addListener(broadcaster, 'click', function() {
+                            console.log("this is data", data);
+                            $('.pl_box').empty();
+                            
+                            var plContainer = $('<div>').attr('class', 'pl_box')
+                            var playlistBox = $('<iframe>').attr({
+                                src: 'https://embed.spotify.com/?uri=' + data,
+                                frameborder: 0,
+                                width: '100%',
+                                height: '100%',
+                                class: 'spotWidget'
+                            });
+
+
+                            $(plContainer).append(playlistBox);
+                            $('.modal-body').append(plContainer);
+                            $('#selectModal').modal('toggle');
+                        });
+
+
                     });
                     socket.emit('bcInfo', user.playlists[currentPl].p_uri);
 
