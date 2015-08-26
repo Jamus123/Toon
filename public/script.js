@@ -203,7 +203,7 @@
                         google.maps.event.addListener(broadcaster, 'click', function() {
                             console.log("this is data", data);
                             $('.pl_box').empty();
-                            
+
                             var plContainer = $('<div>').attr('class', 'pl_box')
                             var playlistBox = $('<iframe>').attr({
                                 src: 'https://embed.spotify.com/?uri=' + data,
@@ -283,11 +283,11 @@
             console.log(tracks)
             $('.modal-body').empty();
             for (var i = 0, len = tracks.length; i < len; i++) {
-                var songBox = $('<div>').attr('class', 'songBox'),
-                    songImg = $('<img>').attr('src', tracks[i]['img']).css({
-                        'max-width': '50%',
-                        'max-height': '50%'
-                    });
+                var songBox = $('<div>').attr('class', 'songBox');
+                var songImg = $('<img>').attr('src', tracks[i]['img']).css({
+                    'max-width': '50%',
+                    'max-height': '50%'
+                });
                 var songName = $('<p>').html(tracks[i]['name']).css('color', "#F9C530"),
                     artist = $('<p>').html(tracks[i]['artist']).css('color', "white");
 
@@ -295,6 +295,13 @@
                 $(songBox).append(songImg);
                 $(songBox).append(songName);
                 $(songBox).append(artist);
+
+                $(songBox).click(function(){
+                    var imgSrc = $(this).children("img").attr('src');
+                    
+                    var favSong = $('<img>').attr('src', imgSrc);
+                    $('#favSong1').append(favSong)
+                });
 
             }
         });
