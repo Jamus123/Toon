@@ -15,6 +15,19 @@ var connection = mysql.createConnection({
     port: 3306,
     database: 'fp_test'
 });
+//app variables
+var client_id = '9b2a0f5b21e54841854ffda54e619b2c',
+    client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800',
+    redirect_uri = 'http://localhost:8888/callback',
+    stateKey = 'spotify_auth_state',
+    app = express(),
+    server = require('http').Server(app),
+    io = require('socket.io')(server);
+
+
+//socket.io port for Irvine
+server.listen(1234);
+
 
 connection.connect(function(err) {
     if (err) {
@@ -26,9 +39,6 @@ connection.connect(function(err) {
 });
 
 
-var client_id = '9b2a0f5b21e54841854ffda54e619b2c';
-var client_secret = '518f6bfb73be4dd4a4aefcc0a75fe800';
-var redirect_uri = 'http://localhost:8888/callback';
 
 /**
  * Generates a random string containing numbers and letters
@@ -44,16 +54,6 @@ var generateRandomString = function(length) {
     }
     return text;
 };
-
-var stateKey = 'spotify_auth_state';
-
-var app = express(),
-    server = require('http').Server(app),
-    io = require('socket.io')(server);
-
-
-//socket.io port
-server.listen(1234);
 
 
 /*********************************************
@@ -93,9 +93,6 @@ io.on('connection', function(socket) {
     });
 
 });
-
-
-
 
 
 /*********************************************
@@ -245,8 +242,6 @@ app.get('/callback', function(req, res) {
         });
     }
 });
-
-
 
 /*********************************************
  *  This is for users to request a new authorization token from spotify
@@ -400,70 +395,3 @@ app.get('/get_playlists', function(req, res) {
 
 console.log('Listening on 8888');
 app.listen(8888);
-
-
-// sendBackData = {playlists:[{
-//   playlistName:"pl1",
-//   tracks:["track1", "track2"]
-// },
-// {
-//   playlistName:"pl1",
-//   tracks:["track1", "track2"]
-// ],
-// searchName:"asdf"};
-
-// responseData = {
-//   success:true,
-//   data:sendBackData
-// };
-
-
-// var asdf = function(){
-//    var defer = Q.defer();
-
-//    defer.resolve('asdf');
-
-//   return defer.promise;
-// }
-
-// var eric = function(promise){
-
-//   promise.then(function(data){
-//     console.log("im in eric : ", data);
-//   });
-
-//   return false;
-// };
-
-// var x = asdf();
-
-// setTimeout(function(){
-//   eric(x);
-// }, 5000);
-
-
-// var defer = {
-//   isResolved:false,
-//   thenFun:null,
-//   resolve:function(obj){
-//     if(thenFunc){
-//       this.thenFunc.apply(this, obj);
-//     }
-//     isResolved = true;
-//   },
-//   promise:{
-//     then:function(func){
-//       this.thenFunc = func;
-//       if(isResolved){
-//         //call resolved
-//       }
-//     },
-//     catch:function(){
-
-//     }
-//   }
-// }
-
-// asdf().then(function(dara){
-
-// })
