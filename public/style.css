@@ -278,6 +278,11 @@ input:focus {
     color: #F9C530 ;
 }
 
+#favSong1 img, #favSong2 img, #favSong3 img{
+    height: 100%;
+    width: 100%;
+}
+
 
 /* Broadcast and chat area */
 

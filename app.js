@@ -138,7 +138,7 @@ app.get('/login', function(req, res) {
 
 /*********************************************
  *  This route checks to make the user has an auth token
- *   if they are logged in successfully they are checked in my DB if they exist.
+ *   if they are logged in successfully they are checked in DB if they exist.
  *  if they do not their spotify ID is saved to the DB
  **********************************************/
 app.get('/callback', function(req, res) {

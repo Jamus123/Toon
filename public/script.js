@@ -30,6 +30,8 @@
 
     error = params.error;
 
+    
+
 
     /************************
      *   Ajax request to retrieve users ID and then
@@ -37,6 +39,7 @@
      *   with the Sptofy widget(iframe)
      *
      */
+     var usersPlBox;//needs to be out of scope of ajax call
     if (error) {
         alert('There was an error during the authentication');
     } else {
@@ -70,15 +73,14 @@
                             success: function(response) {
                                 user.playlists = response;
                                 console.log('playlist data', user.playlists);
-                                var playlistBox = $('<iframe>').attr({
+                                usersPlBox = $('<iframe>').attr({
                                     src: 'https://embed.spotify.com/?uri=' + user.playlists[0].p_uri,
                                     frameborder: 0,
                                     width: '100%',
                                     height: '100%',
                                     class: 'spotWidget'
                                 });
-
-                                $('#pl_box').append(playlistBox);
+                                $('.pl_box').append(usersPlBox);
 
                             }
 
@@ -107,8 +109,6 @@
 
 
     var map;
-
-
 
     function smoothZoom(map, max, cnt) {
         if (cnt >= max) {
@@ -203,9 +203,9 @@
                         google.maps.event.addListener(broadcaster, 'click', function() {
                             console.log("this is data", data);
                             $('.pl_box').empty();
-
+                            $('.modal-body').empty();
                             var plContainer = $('<div>').attr('class', 'pl_box')
-                            var playlistBox = $('<iframe>').attr({
+                            var bcPlBox = $('<iframe>').attr({
                                 src: 'https://embed.spotify.com/?uri=' + data,
                                 frameborder: 0,
                                 width: '100%',
@@ -214,7 +214,7 @@
                             });
 
 
-                            $(plContainer).append(playlistBox);
+                            $(plContainer).append(bcPlBox);
                             $('.modal-body').append(plContainer);
                             $('#selectModal').modal('toggle');
                         });
@@ -280,8 +280,7 @@
         $('#favSong1').click(function() {
 
             var tracks = user.playlists[currentPl].tracks;
-            console.log(tracks)
-            $('.modal-body').empty();
+
             for (var i = 0, len = tracks.length; i < len; i++) {
                 var songBox = $('<div>').attr('class', 'songBox');
                 var songImg = $('<img>').attr('src', tracks[i]['img']).css({
@@ -296,14 +295,17 @@
                 $(songBox).append(songName);
                 $(songBox).append(artist);
 
-                $(songBox).click(function(){
+                $(songBox).click(function() {
                     var imgSrc = $(this).children("img").attr('src');
-                    
                     var favSong = $('<img>').attr('src', imgSrc);
-                    $('#favSong1').append(favSong)
+                    $('#favSong1').append(favSong);
                 });
-
             }
+        });
+
+        $('#selectModal').on('hidden.bs.modal', function() {
+            $('.modal-body').empty();
+            $('.pl_box').append(usersPlBox);
         });
     });
 
